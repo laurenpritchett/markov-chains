@@ -27,10 +27,12 @@ def make_chains(text_string):
 
     chains = {}
     words = text_string.split()
-
+    # loop through words to create tuples as keys for chains dictionary
     for index in range(len(words) - 2):
+        # if tuple key found append this value
         if (words[index], words[index+1]) in chains:
             chains[(words[index], words[index+1])].append(words[index + 2])
+        # if tuple not found, create key and add value
         else:
             chains[(words[index], words[index+1])] = [words[index + 2]]
 
@@ -41,10 +43,21 @@ def make_chains(text_string):
 
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
+    key_choices = chains.keys()
+    key = choice(key_choices)
 
-    text = ""
+    text = key[0] + " " + key[1]
 
-    # your code goes here
+    while True:
+        if key not in chains:
+            break
+        else:
+            new_word = choice(chains[key])
+            text = text + " " + new_word
+            key = (key[1], new_word)
+
+    # for bigram, value in chains.iteritems():
+    #     text += value
 
     return text
 
@@ -60,7 +73,8 @@ print input_text
 chains = make_chains(input_text)
 print chains
 
-# # Produce random text
-# random_text = make_text(chains)
+# Produce random text
+random_text = make_text(chains)
+print random_text
 
 # print random_text
