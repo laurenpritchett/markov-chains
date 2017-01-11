@@ -52,6 +52,13 @@ def make_chains(text_string, key_word_count):
     return chains
 
 
+def is_capitalized(key):
+    if key[0][0].isupper():
+        return True
+    else:
+        return False
+
+
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
@@ -59,9 +66,10 @@ def make_text(chains):
     key_choices = chains.keys()
 
     #randomly selects one key tuple
-    key = choice(key_choices)
-    print "key is: "
-    print key
+    while True:
+        key = choice(key_choices)
+        if is_capitalized(key):
+            break
 
     #initializes text list with first key tuple
     text = []
@@ -79,15 +87,10 @@ def make_text(chains):
             text.append(new_word)
 
             #advance key for next iteration
-            for index in range(len(key)):
-                key_as_list = []
-                print "key[index] is: " + key[index]
-                key_as_list.append(key[index])
-
+            key_as_list = list(key)
+            del key_as_list[0]
             key_as_list.append(new_word)
             key = tuple(key_as_list)
-            print "key tuple (should be 3!!) is: "
-            print key
 
     # for bigram, value in chains.iteritems():
     #     text += value
@@ -103,8 +106,7 @@ input_text = open_and_read_file(input_path)
 # print input_text
 
 # # Get a Markov chain
-chains = make_chains(input_text, 3)
-# print chains
+chains = make_chains(input_text, 3)  # print chains
 
 # Produce random text
 random_text = make_text(chains)
