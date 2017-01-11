@@ -58,6 +58,11 @@ def is_capitalized(key):
     else:
         return False
 
+def is_ending_punctuation(word):
+        if word[-1] in ".!?":
+            return True
+        else:
+            return False
 
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
@@ -83,6 +88,10 @@ def make_text(chains):
         else:
             #picking a viable next word from value list for given key
             new_word = choice(chains[key])
+            if is_ending_punctuation(new_word):
+                text.append(new_word)
+                break
+
             # append next word to text list
             text.append(new_word)
 
@@ -106,7 +115,7 @@ input_text = open_and_read_file(input_path)
 # print input_text
 
 # # Get a Markov chain
-chains = make_chains(input_text, 3)  # print chains
+chains = make_chains(input_text, 2)  # print chains
 
 # Produce random text
 random_text = make_text(chains)
