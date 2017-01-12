@@ -52,21 +52,8 @@ def make_chains(text_string, key_word_count):
     return chains
 
 
-def is_capitalized(key):
-    if key[0][0].isupper():
-        return True
-    else:
-        return False
-
-def is_ending_punctuation(word):
-        if word[-1] in ".!?":
-            return True
-        else:
-            return False
-
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
-
     #list of key tuples
     key_choices = chains.keys()
 
@@ -107,18 +94,38 @@ def make_text(chains):
     return " ".join(text)
 
 
-input_path = sys.argv[1]
+def is_capitalized(key):
+    if key[0][0].isupper():
+        return True
+    else:
+        return False
+
+
+def is_ending_punctuation(word):
+        if word[-1] in ".!?":
+            return True
+        else:
+            return False
+
+
+def tweet_markov(text, chains):
+    """evaluates text for suitability to Twitter, then tweets it.
+    """
+
+    while len(text) >= 140:
+        text = make_text(chains)
+
+    print text
+
+
+file_name = sys.argv[1]
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+text_from_file = open_and_read_file(file_name)
 
-# print input_text
+# Markov chain dictionary from text file
+chains = make_chains(text_from_file, 2)
 
-# # Get a Markov chain
-chains = make_chains(input_text, 2)  # print chains
+markov_text = make_text(chains)
 
-# Produce random text
-random_text = make_text(chains)
-print random_text
-
-# print random_text
+tweet_markov(markov_text, chains)
