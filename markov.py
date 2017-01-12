@@ -1,5 +1,15 @@
 from random import choice
 import sys
+import twitter
+import os
+
+api = twitter.Api(
+    consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+    consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+    access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+    access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+print api.VerifyCredentials()
 
 
 def open_and_read_file(file_path):
@@ -90,7 +100,7 @@ def make_text(chains):
 
     # for bigram, value in chains.iteritems():
     #     text += value
-
+    print " ".join(text)
     return " ".join(text)
 
 
@@ -117,15 +127,33 @@ def tweet_markov(text, chains):
 
     print text
 
+    print """
+    Would you like to:
+    1. tweet this message
+    2. see a different message to tweet
+    3. quit
+    """
+    user_selection = raw_input("> ")
+    if user_selection == "1":
+        status = api.PostUpdate(text)
+        print status.text
+    elif user_selection == "2":
+        new_text = make_text(chains)
+        tweet_markov(new_text, chains)
+    else:
+        return
 
-file_name = sys.argv[1]
 
-# Open the file and turn it into one long string
-text_from_file = open_and_read_file(file_name)
+if __name__ == '__main__':
 
-# Markov chain dictionary from text file
-chains = make_chains(text_from_file, 2)
+    file_name = sys.argv[1]
 
-markov_text = make_text(chains)
+    # Open the file and turn it into one long string
+    text_from_file = open_and_read_file(file_name)
 
-tweet_markov(markov_text, chains)
+    # Markov chain dictionary from text file
+    chains = make_chains(text_from_file, 2)
+
+    markov_text = make_text(chains)
+
+    tweet_markov(markov_text, chains)
